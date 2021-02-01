@@ -24,7 +24,6 @@ const addGlobalEventListener = (type, selector, callback) => {
 }
 
 const startGame = () => {
-    gameInput.focus();
     gameStarted = true;
     score = 0;    
     wordsFound = 0;
@@ -75,7 +74,7 @@ const showInitialState = () => {
     hide(results);
 
     show(title);
-    startButton.textContent = "Press to Start";
+    startButton.textContent = "Get Started";
     show(startButton);
 }
 
@@ -93,6 +92,7 @@ const showGameState = () => {
     show(letterContainer);
     show(timer);
     show(gameInput);
+    gameInput.focus();
 }
 
 const showGameOverState = () => {

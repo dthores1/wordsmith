@@ -1,8 +1,8 @@
 // Game length
-const GAME_DURATION = 59;
+const GAME_DURATION = 5;
 const INITIAL_TIMER_DISPLAY = "1:00";
 
-const COUNTDOWN_DURATION = 3;
+const COUNTDOWN_DURATION = 59;
 
 const INCORRECT_WORD_PENALTY = -15;
 
@@ -27,7 +27,6 @@ const LETTER_SETS = [
         "software",
         "skipjack",
         "equalize",
-        "whizkids",
         "blackbox",
         "yourself",
         "wherever",
@@ -35,5 +34,23 @@ const LETTER_SETS = [
         "weakness",
         "thousand",
         "transfer",
-        "somewhat"
+        "somewhat",
+        "chopping",
+        "anything",
+        "becoming",
+        "fourteen",
+        "overhead",
+        "wizardly",
+        "purchase",
+        "strategy",
+        "sweeping",
+        "stunning",
+        "turnover",
+        "unlikely",
+        "withdraw",
+        "saveable",
+        "wireless",
+        "wildlife",
+        "distance",
+        "prefixes"
     ];

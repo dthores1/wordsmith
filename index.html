@@ -19,7 +19,10 @@
 
     <body>
         <div class="game-container">
-            <h1 id="title">See how many words you can make!</h1>
+            <div id="title">
+                <h1>Wordsmith - By Dan Thoreson</h1>
+                <p><strong>Objective: </strong>Make as many words as possible from the provided set of letters before time runs out!</strong></p>
+            </div>
 
             <div id="results">
                 <p id="countdown" class="invisible">3</p>
@@ -35,7 +38,7 @@
                 <div id="letters-box"></div>
             </div>
             
-            <button id="start-button" class="invisible">Press to start</button>
+            <button id="start-button" class="button" class="invisible"></button>
             <input type="text" id="game-input" class="invisible" placeholder="Start making words!" onfocus="this.placeholder = ''"/>
 
             <div class="errors"></div>

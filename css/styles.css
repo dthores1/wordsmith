@@ -11,6 +11,15 @@ body {
     background: #203647;
 }
 
+#title h1 {
+    text-decoration: underline;
+}
+
+#title p {
+    text-align: justify;
+    font-size: 100%;    
+}
+
 .game-container {
     background: #EEFBFB;
     justify-content: center;
@@ -26,6 +35,17 @@ body {
 
 .tooltip {
     font-size: 75%;
+}
+
+.button {
+    background-color: #007cc7;
+    color: #fff;
+    border: 5px solid #203647;
+    border-radius: 16px;
+}
+
+.button:hover {
+    cursor: pointer;
 }
 
 #timer {
