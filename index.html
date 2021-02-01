@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Word Game!</title>
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/styles.css" />
+
+        <script src="js/constants.js" async></script>
+        <script src="js/spellCheckApi.js" async></script>
+        <script src="js/wordUtilities.js" async></script>
+        <script src="js/wordGame.js" async></script>
+    </head>
+
+    <body>
+        <div class="game-container">
+            <h1 id="title">See how many words you can make!</h1>
+
+            <div id="results">
+                <p id="countdown" class="invisible">3</p>
+                <p id="timer" class="invisible">1:00</p>
+                <div id="results-container" class="invisible">
+                    <p>Game over!</p>
+                    <p id="final-score"></p>
+                </div>                
+            </div>
+
+            <div id="letters-container" class="invisible">
+                <p class="tooltip">Hint: Press Shift to shuffle letters.</p>
+                <div id="letters-box"></div>
+            </div>
+            
+            <button id="start-button" class="invisible">Press to start</button>
+            <input type="text" id="game-input" class="invisible" placeholder="Start making words!" onfocus="this.placeholder = ''"/>
+
+            <div class="errors"></div>
+        </div>
+    </body>
+</html>
