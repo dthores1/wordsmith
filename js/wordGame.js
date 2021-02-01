@@ -182,7 +182,6 @@ const hide = (elem) => {
     elem.classList.add("invisible");
 }
 
-// TODO - BLOCK SPACES
 const validateInput = e => {
     const word = e.target.value?.toLowerCase();
 
@@ -275,9 +274,6 @@ const setLettersAsPlayed = () => {
             allLetters[i].classList.remove("played");
         }
     }
-
-    // let resets = allLetters.filter(elem => !gameInput.value.toLowerCase().includes(elem.textContent.toLowerCase()));
-    // resets.forEach(r => r.classList.remove("played"));
 }
 
 const hasErrors = word => {
