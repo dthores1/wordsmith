@@ -1,8 +1,8 @@
 // Game length
-const GAME_DURATION = 5;
+const GAME_DURATION = 59;
 const INITIAL_TIMER_DISPLAY = "1:00";
 
-const COUNTDOWN_DURATION = 59;
+const COUNTDOWN_DURATION = 5;
 
 const INCORRECT_WORD_PENALTY = -15;
 
