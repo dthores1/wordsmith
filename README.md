@@ -20,3 +20,5 @@ When a player types a word and presses Enter, the game will determine if the wor
 
 ![Screenshot 3](https://github.com/dthores1/wordsmith/blob/master/img/screenshots/wordsmith-3.png "Screenshot 3")
 
+## Known Issues
+- Game allows you to use a letter multiple times, even if that letter is only in the list once. 
