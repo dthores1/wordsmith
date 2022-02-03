@@ -54,5 +54,6 @@ const LETTER_SETS = [
     "wireless",
     "wildlife",
     "distance",
-    "prefixes"
+    "prefixes",
+    "shoplift"
 ];

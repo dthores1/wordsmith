@@ -13,12 +13,15 @@ let words;
 let letters = [];
 let lettersMap = {};
 let wordsPlayed = [];
+let newWordsFromApi = []; // Insert these to database later
 let gameStarted = false;
 let interval;
 let isHighScore = false;
 let score = 0;
 let wordsFound = 0;
 let gameStats;
+
+// TODO - Add words to redis
 
 const addGlobalEventListener = (type, selector, callback) => {
     document.addEventListener(type, e => {
@@ -32,6 +35,8 @@ const startGame = () => {
     score = 0;
     wordsFound = 0;
     wordsPlayed = [];
+    newWordsFromApi = [];
+  
     gameStats = getGameStats();
 
     handleCountdownTimer();
@@ -49,6 +54,7 @@ const endGame = () => {
     isHighScore = score > gameStats.highScore && gameStats.gamesPlayed > 0;
 
     showGameOverState();
+    saveWordsFromApi();
     setGameStats();
 };
 
@@ -311,6 +317,19 @@ const hasErrors = word => {
     return false;
 };
 
+const saveWordsFromApi = () => {
+    if (!newWordsFromApi.length) {
+        return;
+    }
+
+    // Add the words to our local set
+    newWordsFromApi.forEach(word => {
+        words[word] = true;
+    });
+
+    // Save to Redis...
+};
+
 
 const setGameStats = () => {
     if (isHighScore || !gameStats.gamesPlayed) {
@@ -343,7 +362,7 @@ const getGameStats = () => {
 };
 
 // Reset function to run after a valid word has been played
-const logValidWord = word => {
+const logValidWord = (word, fromApi) => {
     clearValues();
 
     let wordScore = getWordScore(word.length);
@@ -352,6 +371,15 @@ const logValidWord = word => {
     // Add to our main dataset
     score += wordScore;
     wordsFound++;
+
+    if (fromApi) {
+        // Add the word locally if it wasn't there already
+        // This is so we minimize calls to the spell check API        
+        words[word] = true;
+        newWordsFromApi.push(word);
+    }
+
+
     wordsPlayed.push(word);
 };
 
