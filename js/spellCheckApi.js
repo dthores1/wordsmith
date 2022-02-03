@@ -20,14 +20,14 @@ const makeApiAttempt = word => {
     xhr.withCredentials = false;
 
     xhr.addEventListener("readystatechange", function () {
-        if(this.readyState === this.DONE) {
+        if (this.readyState === this.DONE) {
             const responseObj = JSON.parse(this.responseText);
 
-            if(responseObj.spellingErrorCount) {
+            if (responseObj.spellingErrorCount) {
                 logInvalidWord();
             } else {
-                console.log("%c The word was found in the API!", "font-style: italic; color: orange;");                    
-                logValidWord(word);
+                console.log("%c The word was found in the API!", "font-style: italic; color: orange;");
+                logValidWord(word, true);
             }
         }
     });
@@ -38,4 +38,4 @@ const makeApiAttempt = word => {
     xhr.setRequestHeader("x-rapidapi-host", "jspell-checker.p.rapidapi.com");
 
     xhr.send(data);
-}
+};
