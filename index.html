@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Word Game!</title>
 
-        <link rel="preconnect" href="https://fonts.gstatic.com">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Game!</title>
 
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
 
-        <link rel="stylesheet" href="css/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
 
-        <script src="js/constants.js" async></script>
-        <script src="js/spellCheckApi.js" async></script>
-        <script src="js/wordUtilities.js" async></script>
-        <script src="js/wordGame.js" async></script>
-    </head>
+    <link rel="stylesheet" href="css/styles.css" />
 
-    <body>
-        <div class="game-container">
-            <div id="title">
-                <h1>Wordsmith - By Dan Thoreson</h1>
-                <p><strong>Objective: </strong>Make as many words as possible from the provided set of letters before time runs out!</strong></p>
-            </div>
+    <script src="js/constants.js" async></script>
+    <script src="js/spellCheckApi.js" async></script>
+    <script src="js/wordUtilities.js" async></script>
+    <script src="js/wordGame.js" async></script>
+</head>
 
-            <div id="results">
-                <p id="countdown" class="invisible">3</p>
-                <p id="timer" class="invisible">1:00</p>
-                <div id="results-container" class="invisible">
-                    <p>Game over!</p>
-                    <p id="final-score"></p>
-                </div>                
-            </div>
-
-            <div id="letters-container" class="invisible">
-                <p class="tooltip">Hint: Press Shift to shuffle letters.</p>
-                <div id="letters-box"></div>
-            </div>
-            
-            <button id="start-button" class="button" class="invisible"></button>
-            <input type="text" id="game-input" class="invisible" placeholder="Start making words!" onfocus="this.placeholder = ''"/>
-
-            <div class="errors"></div>
+<body>
+    <div class="game-container">
+        <div id="title">
+            <h1>Wordsmith - By Dan Thoreson</h1>
+            <p><strong>Objective: </strong>Make as many words as possible from the provided set of letters before time
+                runs out!</strong></p>
         </div>
-    </body>
+
+        <div id="results">
+            <p id="countdown" class="invisible">3</p>
+            <p id="timer" class="invisible">1:00</p>
+            <div id="results-container" class="invisible">
+                <p>Game over!</p>
+                <p id="high-score"></p>
+                <p id="final-score"></p>
+            </div>
+        </div>
+
+        <div id="letters-container" class="invisible">
+            <p class="tooltip">Hint: Press Shift to shuffle letters.</p>
+            <div id="letters-box"></div>
+        </div>
+
+        <button id="start-button" class="button" class="invisible"></button>
+        <input type="text" id="game-input" class="invisible" placeholder="Start making words!"
+            onfocus="this.placeholder = ''" />
+
+        <div class="errors"></div>
+    </div>
+</body>
+
 </html>

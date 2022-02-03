@@ -36,6 +36,7 @@ const startGame = () => {
     wordsFound = 0;
     wordsPlayed = [];
     newWordsFromApi = [];
+  
     gameStats = getGameStats();
 
     handleCountdownTimer();
@@ -328,6 +329,7 @@ const saveWordsFromApi = () => {
 
     // Save to Redis...
 };
+
 
 const setGameStats = () => {
     if (isHighScore || !gameStats.gamesPlayed) {

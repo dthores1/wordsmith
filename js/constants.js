@@ -6,6 +6,8 @@ const COUNTDOWN_DURATION = 5;
 
 const INCORRECT_WORD_PENALTY = -15;
 
+const STORAGE_KEY_GAME_STATS = "gameStats";
+
 // Error messages
 const ERROR_MSGS = {
     "lessThanThreeLetters": "Please enter three or more characters.",
