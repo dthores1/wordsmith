@@ -19,7 +19,8 @@ let interval;
 let isHighScore = false;
 let score = 0;
 let wordsFound = 0;
-let gameStats;
+let gameStatistics;
+let gameState;
 
 // TODO - Add words to redis
 
@@ -36,8 +37,9 @@ const startGame = () => {
     wordsFound = 0;
     wordsPlayed = [];
     newWordsFromApi = [];
-  
-    gameStats = getGameStats();
+
+    gameStatistics = getGameStatistics();
+    gameState = getGameState();
 
     handleCountdownTimer();
 };
@@ -51,11 +53,12 @@ const setupGame = () => {
 const endGame = () => {
     clearInterval(interval);
     gameStarted = false;
-    isHighScore = score > gameStats.highScore && gameStats.gamesPlayed > 0;
+    isHighScore = score > gameStatistics.highScore && gameStatistics.gamesPlayed > 0;
 
     showGameOverState();
     saveWordsFromApi();
-    setGameStats();
+    setGameStatistics();
+    setGameState();
 };
 
 const handleCountdownTimer = () => {
@@ -144,9 +147,42 @@ const showGameOverState = () => {
     });
 };
 
-// TODO - Prevent repeats in the same session
+// Gets the letters for the game
 const setLetters = () => {
-    buildLetters(LETTER_SETS[Math.floor(Math.random() * LETTER_SETS.length)]);
+    const numberOfWordChoicesInGame = LETTER_SETS.length;
+    const numberOfWordsPlayed = Object.keys(gameState.wordsPlayed).length;
+    let selectedWord;
+
+    // Reset once the user has played all the words
+    if (numberOfWordChoicesInGame === numberOfWordsPlayed) {
+        gameState.wordsPlayed = {};
+    }
+
+    // If we have used over half of the words in all our game choices, go through the list
+    // until we find one that hasn't been used. At this point, randomly picking is going to get
+    // too slow. 
+    if (numberOfWordsPlayed >= (numberOfWordChoicesInGame / 2)) {
+        for (const word of LETTER_SETS) {
+            if (!word in gameState.wordsPlayed) {
+                selectedWord = word;
+                break;
+            }
+        }
+        // If we haven't used half the words in the game, keep randomly selecting them. 
+        // This will give an element of randomness to the game's word selections. 
+    } else {
+        let wordPlayed = true;
+
+        // Randomly select the word, but still make sure it has not been played
+        while (wordPlayed) {
+            selectedWord = LETTER_SETS[Math.floor(Math.random() * LETTER_SETS.length)];
+
+            wordPlayed = selectedWord in gameState.wordsPlayed;
+        }
+    }
+
+    buildLetters(selectedWord);
+    gameState.wordsPlayed[selectedWord] = true;
 };
 
 const buildLetters = lettersStr => {
@@ -331,20 +367,24 @@ const saveWordsFromApi = () => {
 };
 
 
-const setGameStats = () => {
-    if (isHighScore || !gameStats.gamesPlayed) {
-        gameStats.highScore = score;
+const setGameStatistics = () => {
+    if (isHighScore || !gameStatistics.gamesPlayed) {
+        gameStatistics.highScore = score;
     }
 
     // Set mostWordsFound to the current wordsFound if the current is the best ever
-    gameStats.mostWordsFound = wordsFound > gameStats.mostWordsFound ? wordsFound : gameStats.mostWordsFound;
+    gameStatistics.mostWordsFound = wordsFound > gameStatistics.mostWordsFound ? wordsFound : gameStatistics.mostWordsFound;
 
-    gameStats.gamesPlayed++;
+    gameStatistics.gamesPlayed++;
 
-    localStorage.setItem(STORAGE_KEY_GAME_STATS, JSON.stringify(gameStats));
+    localStorage.setItem(STORAGE_KEY_GAME_STATS, JSON.stringify(gameStatistics));
 };
 
-const getGameStats = () => {
+const setGameState = () => {
+    localStorage.setItem(STORAGE_KEY_GAME_STATE, JSON.stringify(gameState));
+};
+
+const getGameStatistics = () => {
     let returnValue = localStorage.getItem(STORAGE_KEY_GAME_STATS);
 
     if (returnValue) {
@@ -355,6 +395,20 @@ const getGameStats = () => {
             "highScore": 0,
             "mostWordsFound": 0,
             "gamesPlayed": 0,
+        };
+    }
+
+    return returnValue;
+};
+
+const getGameState = () => {
+    let returnValue = localStorage.getItem(STORAGE_KEY_GAME_STATE);
+
+    if (returnValue) {
+        returnValue = JSON.parse(returnValue);
+    } else {
+        returnValue = {
+            wordsPlayed: {} // More efficient than an array
         };
     }
 

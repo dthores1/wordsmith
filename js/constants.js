@@ -7,6 +7,7 @@ const COUNTDOWN_DURATION = 5;
 const INCORRECT_WORD_PENALTY = -15;
 
 const STORAGE_KEY_GAME_STATS = "gameStats";
+const STORAGE_KEY_GAME_STATE = "gameState";
 
 // Error messages
 const ERROR_MSGS = {
