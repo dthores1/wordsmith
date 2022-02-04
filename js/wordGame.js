@@ -161,7 +161,7 @@ const setLetters = () => {
     // If we have used over half of the words in all our game choices, go through the list
     // until we find one that hasn't been used. At this point, randomly picking is going to get
     // too slow. 
-    if (numberOfWordsPlayed >= (numberOfWordChoicesInGame / 2)) {
+    if (numberOfWordsPlayed >= (Math.ceil(numberOfWordChoicesInGame / 2))) {
         for (const word of LETTER_SETS) {
             if (!word in gameState.wordsPlayed) {
                 selectedWord = word;
