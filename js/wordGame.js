@@ -1,15 +1,17 @@
-const errors = document.querySelector(".errors");
+import { words, initDictionary, addError, getWordScore, clearValues, removeScoreElement, displayWordScore, isRunningTest } from "./wordUtilities.js";
+import { STORAGE_KEY_GAME_STATE, STORAGE_KEY_GAME_STATS, COUNTDOWN_DURATION, INCORRECT_WORD_PENALTY, INITIAL_TIMER_DISPLAY, LETTER_SETS, GAME_DURATION, ERROR_MSGS } from "./constants.js";
+
+export const errors = document.querySelector(".errors");
 const countdown = document.querySelector("#countdown");
 const timer = document.querySelector("#timer");
 const results = document.querySelector("#results-container");
 const finalScore = document.querySelector("#final-score");
 const highScore = document.querySelector("#high-score");
-const gameInput = document.querySelector("#game-input");
+export const gameInput = document.querySelector("#game-input");
 const startButton = document.querySelector("#start-button");
 const title = document.querySelector("#title");
 const letterContainer = document.querySelector("#letters-container");
 
-let words;
 let letters = [];
 let lettersMap = {};
 let wordsPlayed = [];
@@ -23,6 +25,10 @@ let gameStatistics;
 let gameState;
 
 // TODO - Add words to redis
+
+if (!isRunningTest()) {
+    initDictionary();
+}
 
 const addGlobalEventListener = (type, selector, callback) => {
     document.addEventListener(type, e => {
@@ -85,7 +91,7 @@ const handleTimer = () => {
     }, 1000);
 };
 
-const showInitialState = () => {
+export const showInitialState = () => {
     hide(timer);
     finalScore.textContent = "";
     hide(results);
@@ -309,7 +315,7 @@ const hasUsedAllInstancesOfLetter = (l) => {
     return false;
 };
 
-const setLettersAsPlayed = () => {
+export const setLettersAsPlayed = () => {
     let allLetters = Array.from(document.querySelectorAll("#letters-box span"));
 
     let textVal = gameInput.value;
@@ -384,13 +390,12 @@ const setGameState = () => {
     localStorage.setItem(STORAGE_KEY_GAME_STATE, JSON.stringify(gameState));
 };
 
-const getGameStatistics = () => {
+export const getGameStatistics = () => {
     let returnValue = localStorage.getItem(STORAGE_KEY_GAME_STATS);
 
     if (returnValue) {
         returnValue = JSON.parse(returnValue);
     } else {
-        // TODO - More stats
         returnValue = {
             "highScore": 0,
             "mostWordsFound": 0,
@@ -401,8 +406,10 @@ const getGameStatistics = () => {
     return returnValue;
 };
 
-const getGameState = () => {
+export const getGameState = () => {
     let returnValue = localStorage.getItem(STORAGE_KEY_GAME_STATE);
+
+    console.log("returnValue", returnValue);
 
     if (returnValue) {
         returnValue = JSON.parse(returnValue);
