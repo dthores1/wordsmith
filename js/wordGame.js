@@ -14,7 +14,7 @@ const letterContainer = document.querySelector("#letters-container");
 
 let letters = [];
 let lettersMap = {};
-let letterSetsUsed = [];
+let wordsPlayed = [];
 let newWordsFromApi = []; // Insert these to database later
 let gameStarted = false;
 let interval;
@@ -41,7 +41,7 @@ const startGame = () => {
     isHighScore = false;
     score = 0;
     wordsFound = 0;
-    letterSetsUsed = [];
+    wordsPlayed = [];
     newWordsFromApi = [];
 
     gameStatistics = getGameStatistics();
@@ -440,7 +440,7 @@ const logValidWord = (word, fromApi) => {
         newWordsFromApi.push(word);
     }
 
-    letterSetsUsed.push(word);
+    wordsPlayed.push(word);
 };
 
 const logInvalidWord = () => {
