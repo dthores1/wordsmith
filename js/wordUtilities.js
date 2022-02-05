@@ -1,4 +1,4 @@
-import { showInitialState, gameInput, setLettersAsPlayed, errors } from "./wordGame.js";
+import { showInitialState, gameInput, setLettersAsPlayed, errors, show } from "./wordGame.js";
 
 export let words;
 

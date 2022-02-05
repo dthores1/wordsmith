@@ -1,5 +1,6 @@
 import { words, initDictionary, addError, getWordScore, clearValues, removeScoreElement, displayWordScore, isRunningTest } from "./wordUtilities.js";
-import { STORAGE_KEY_GAME_STATE, STORAGE_KEY_GAME_STATS, COUNTDOWN_DURATION, INCORRECT_WORD_PENALTY, INITIAL_TIMER_DISPLAY, LETTER_SETS, GAME_DURATION, ERROR_MSGS } from "./constants.js";
+import { STORAGE_KEY_GAME_STATE, STORAGE_KEY_GAME_STATS, COUNTDOWN_DURATION, INCORRECT_WORD_PENALTY, INITIAL_TIMER_DISPLAY, LETTER_SETS, NUMBER_OF_LETTERS_PER_GAME, GAME_DURATION, ERROR_MSGS } from "./constants.js";
+import { makeApiAttempt } from "./spellCheckApi.js";
 
 export const errors = document.querySelector(".errors");
 const countdown = document.querySelector("#countdown");
@@ -14,8 +15,9 @@ const letterContainer = document.querySelector("#letters-container");
 
 let letters = [];
 let lettersMap = {};
-let wordsPlayed = [];
 let newWordsFromApi = []; // Insert these to database later
+let wordsPlayed;
+let wordsPlayedArray;
 let gameStarted = false;
 let interval;
 let isHighScore = false;
@@ -41,7 +43,8 @@ const startGame = () => {
     isHighScore = false;
     score = 0;
     wordsFound = 0;
-    wordsPlayed = [];
+    wordsPlayed = initWordsPlayed();
+    wordsPlayedArray = [];
     newWordsFromApi = [];
 
     gameStatistics = getGameStatistics();
@@ -235,12 +238,12 @@ const determineStart = (e) => {
     startGame();
 };
 
-const show = (elem) => {
+export const show = (elem) => {
     elem.classList.remove("invisible");
     elem.classList.add("visible");
 };
 
-const hide = (elem) => {
+export const hide = (elem) => {
     elem.classList.remove("visible");
     elem.classList.add("invisible");
 };
@@ -268,7 +271,7 @@ const validateInput = e => {
 
         // Check for the presence of the word in our local dictionary first
         if (words.hasOwnProperty(word)) {
-            console.log("%c The word exists in our local dictionary!", "font-weight: bold; color: green;");
+            // console.log("%c The word exists in our local dictionary!", "font-weight: bold; color: green;");
             logValidWord(word, false);
             return;
         }
@@ -340,7 +343,7 @@ export const setLettersAsPlayed = () => {
 };
 
 const hasErrors = word => {
-    let alreadyPlayed = letterSetsUsed.includes(word);
+    let alreadyPlayed = wordsPlayedArray.includes(word);
 
     // Show error and exit if Enter was pressed and no word was entered
     if (!word) {
@@ -422,8 +425,12 @@ export const getGameState = () => {
     return returnValue;
 };
 
+export const initWordsPlayed = () => {
+    return Array.from({ length: NUMBER_OF_LETTERS_PER_GAME }, (v, i) => []);
+};
+
 // Reset function to run after a valid word has been played
-const logValidWord = (word, fromApi) => {
+export const logValidWord = (word, fromApi) => {
     clearValues();
 
     let wordScore = getWordScore(word.length);
@@ -440,10 +447,18 @@ const logValidWord = (word, fromApi) => {
         newWordsFromApi.push(word);
     }
 
-    wordsPlayed.push(word);
+    // Log the played words
+    const wordObjIndex = word.length - 1;
+    // let wordObj = wordsPlayed[wordObjIndex];
+    // wordObj[word] = true;
+    wordsPlayed[wordObjIndex].push(word);
+
+    console.table(wordsPlayed);
+
+    wordsPlayedArray.push(word);
 };
 
-const logInvalidWord = () => {
+export const logInvalidWord = () => {
     clearValues();
 
     score += INCORRECT_WORD_PENALTY;
