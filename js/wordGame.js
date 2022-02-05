@@ -14,7 +14,7 @@ const letterContainer = document.querySelector("#letters-container");
 
 let letters = [];
 let lettersMap = {};
-let wordsPlayed = [];
+let letterSetsUsed = [];
 let newWordsFromApi = []; // Insert these to database later
 let gameStarted = false;
 let interval;
@@ -41,7 +41,7 @@ const startGame = () => {
     isHighScore = false;
     score = 0;
     wordsFound = 0;
-    wordsPlayed = [];
+    letterSetsUsed = [];
     newWordsFromApi = [];
 
     gameStatistics = getGameStatistics();
@@ -156,20 +156,20 @@ const showGameOverState = () => {
 // Gets the letters for the game
 const setLetters = () => {
     const numberOfWordChoicesInGame = LETTER_SETS.length;
-    const numberOfWordsPlayed = Object.keys(gameState.wordsPlayed).length;
+    const numberOfletterSetsUsed = Object.keys(gameState.letterSetsUsed).length;
     let selectedWord;
 
     // Reset once the user has played all the words
-    if (numberOfWordChoicesInGame === numberOfWordsPlayed) {
-        gameState.wordsPlayed = {};
+    if (numberOfWordChoicesInGame === numberOfletterSetsUsed) {
+        gameState.letterSetsUsed = {};
     }
 
     // If we have used over half of the words in all our game choices, go through the list
     // until we find one that hasn't been used. At this point, randomly picking is going to get
     // too slow. 
-    if (numberOfWordsPlayed >= (Math.ceil(numberOfWordChoicesInGame / 2))) {
+    if (numberOfletterSetsUsed >= (Math.ceil(numberOfWordChoicesInGame / 2))) {
         for (const word of LETTER_SETS) {
-            if (!word in gameState.wordsPlayed) {
+            if (!word in gameState.letterSetsUsed) {
                 selectedWord = word;
                 break;
             }
@@ -183,12 +183,12 @@ const setLetters = () => {
         while (wordPlayed) {
             selectedWord = LETTER_SETS[Math.floor(Math.random() * LETTER_SETS.length)];
 
-            wordPlayed = selectedWord in gameState.wordsPlayed;
+            wordPlayed = selectedWord in gameState.letterSetsUsed;
         }
     }
 
     buildLetters(selectedWord);
-    gameState.wordsPlayed[selectedWord] = true;
+    gameState.letterSetsUsed[selectedWord] = true;
 };
 
 const buildLetters = lettersStr => {
@@ -340,7 +340,7 @@ export const setLettersAsPlayed = () => {
 };
 
 const hasErrors = word => {
-    let alreadyPlayed = wordsPlayed.includes(word);
+    let alreadyPlayed = letterSetsUsed.includes(word);
 
     // Show error and exit if Enter was pressed and no word was entered
     if (!word) {
@@ -415,7 +415,7 @@ export const getGameState = () => {
         returnValue = JSON.parse(returnValue);
     } else {
         returnValue = {
-            wordsPlayed: {} // More efficient than an array
+            letterSetsUsed: {} // More efficient than an array
         };
     }
 
@@ -440,8 +440,7 @@ const logValidWord = (word, fromApi) => {
         newWordsFromApi.push(word);
     }
 
-
-    wordsPlayed.push(word);
+    letterSetsUsed.push(word);
 };
 
 const logInvalidWord = () => {
