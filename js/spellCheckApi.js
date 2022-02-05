@@ -1,7 +1,9 @@
+import { logValidWord, logInvalidWord } from "./wordGame.js";
+
 const dictApiKey = "5681eaea13msh040b4e972f8cd62p17faa8jsn2fdcd6ca844a";
 const dictApiUrl = "https://jspell-checker.p.rapidapi.com/check";
 
-const makeApiAttempt = word => {
+export const makeApiAttempt = word => {
     const data = JSON.stringify({
         "language": "enUS",
         "fieldvalues": word,
