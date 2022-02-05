@@ -6,16 +6,16 @@ describe("Tests functions related to persisting game state", () => {
         const defaultGameState = getGameState();
 
         expect(defaultGameState).not.toBe(undefined);
-        expect(defaultGameState.wordsPlayed).toEqual({});
+        expect(defaultGameState.letterSetsUsed).toEqual({});
     });
 
     it("verifies game state from local storage", () => {
         localStorage.setItem(STORAGE_KEY_GAME_STATE, JSON.stringify({
-            wordsPlayed: { "wizardly": true, "shoplift": true }
+            letterSetsUsed: { "wizardly": true, "shoplift": true }
         }));
 
         const retrievedGameState = getGameState();
-        expect(Object.keys(retrievedGameState.wordsPlayed).length).toEqual(2);
+        expect(Object.keys(retrievedGameState.letterSetsUsed).length).toEqual(2);
     });
 
     it("verifies default game statistics", () => {
