@@ -2,7 +2,7 @@
 
 A 60-second word game: form as many words as you can from 8 randomly-supplied letters. Longer words score more; invalid words cost 15 points. Words using all 8 letters are always possible from the given set.
 
-Live at <https://wordsmith-sparkling-feather-2886.fly.dev>.
+Live at <https://wordsmith.danthoreson.com>.
 
 ## Screenshots
 
