@@ -1,1 +1,15 @@
 additional_letters.csv
+
+# Node
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local SQLite from local smoke tests
+*.db
+
+# OS
+.DS_Store

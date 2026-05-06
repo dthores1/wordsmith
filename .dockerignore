@@ -1,0 +1,26 @@
+# VCS
+.git
+.gitignore
+
+# Editor / OS
+.DS_Store
+.vscode
+.idea
+
+# Python
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+
+# Node — frontend deps and build output (image rebuilds these in the frontend stage)
+app/node_modules
+app/dist
+
+# Local SQLite created during local smoke testing
+*.db
+
+# Docs / images not needed at runtime
+README.md
+img
