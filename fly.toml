@@ -1,0 +1,30 @@
+# fly.toml app configuration file for wordsmith-sparkling-feather-2886
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'wordsmith-sparkling-feather-2886'
+primary_region = 'sjc'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  PORT = '8080'
+  DB_PATH = '/data/wordsmith.db'
+
+[[mounts]]
+  source = 'wordsmith_data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography roles from the design system */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;        /* body */
+  --font-display: "Plus Jakarta Sans", "Inter", sans-serif;          /* headlines, scores */
+  --font-label: "Lexend", "Inter", sans-serif;                       /* button labels, stat labels */
+
+  /* Brand — Primary (deep navy) */
+  --color-primary-50:  #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #4f6bed;
+  --color-primary-600: #3b56d8;
+  --color-primary-700: #2e44b8;
+  --color-primary-800: #1e3a8a;   /* spec value */
+  --color-primary-900: #172a64;
+  --color-primary-950: #0f1d47;
+
+  /* Brand — Secondary (bright blue) */
+  --color-secondary-50:  #eff6ff;
+  --color-secondary-100: #dbeafe;
+  --color-secondary-200: #bfdbfe;
+  --color-secondary-300: #93c5fd;
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;  /* spec value */
+  --color-secondary-600: #2563eb;
+  --color-secondary-700: #1d4ed8;
+
+  /* Neutrals (Tertiary white + Neutral light gray) */
+  --color-paper: #ffffff;          /* card / elevated surface */
+  --color-bg:    #f8fafc;          /* page background (spec Neutral) */
+  --color-surface-soft: #f1f5f9;   /* very subtle fills (e.g. tile rest) */
+  --color-border:       #e2e8f0;   /* hairline borders */
+  --color-border-strong:#cbd5e1;
+
+  /* Ink (text) */
+  --color-ink-900: #0f172a;        /* primary text */
+  --color-ink-700: #334155;        /* secondary text */
+  --color-ink-500: #64748b;        /* muted */
+  --color-ink-400: #94a3b8;        /* placeholders, captions */
+  --color-ink-300: #cbd5e1;
+
+  /* Status */
+  --color-good: #16a34a;
+  --color-bad:  #b91a1c;
+  --color-warn: #f59e0b;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+/* Tailwind v4 no longer ships a default `cursor: pointer` on <button>.
+   Restore it for all enabled buttons site-wide. */
+@layer base {
+  button:not(:disabled) { cursor: pointer; }
+}
+
+body {
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(59, 130, 246, 0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(30, 58, 138, 0.08), transparent 55%),
+    var(--color-bg);
+  color: var(--color-ink-900);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- animations -------------------------------------------------------- */
+
+@keyframes fly-in {
+  0%   { opacity: 0; transform: translateY(0) scale(0.6); }
+  20%  { opacity: 1; transform: translateY(-8px) scale(1.15); }
+  100% { opacity: 0; transform: translateY(-44px) scale(1); }
+}
+.animate-fly-in { animation: fly-in 900ms ease-out forwards; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-8px); }
+  40%      { transform: translateX(8px); }
+  60%      { transform: translateX(-6px); }
+  80%      { transform: translateX(6px); }
+}
+.animate-shake { animation: shake 280ms ease-in-out; }
+
+@keyframes pulse-fast {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+.animate-pulse-fast { animation: pulse-fast 700ms ease-in-out infinite; }
+
+/* Tile pop — used when letters are dealt or shuffled. Each tile is
+   given a slight stagger via inline animation-delay. */
+@keyframes tile-pop {
+  0%   { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+  60%  { opacity: 1; transform: scale(1.06) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1)    rotate(0deg); }
+}
+.animate-tile-pop { animation: tile-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; }
+
+/* Brief confirmation toast — fade in, hold, fade out. Pairs with a
+   setTimeout in the component to unmount when finished. */
+@keyframes toast-fade {
+  0%   { opacity: 0; transform: translateY(4px); }
+  15%  { opacity: 1; transform: translateY(0); }
+  70%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-2px); }
+}
+.animate-toast-fade { animation: toast-fade 1400ms ease-out forwards; }
