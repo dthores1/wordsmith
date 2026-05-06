@@ -138,7 +138,7 @@ export function useGame(words) {
       return;
     }
 
-    const isWord = !!(words && Object.prototype.hasOwnProperty.call(words, word));
+    const isWord = !!(words && words.has(word));
     if (isWord) {
       const points = scoreForWord(word.length);
       setScore((s) => s + points);
