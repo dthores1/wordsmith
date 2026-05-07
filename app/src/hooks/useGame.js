@@ -15,7 +15,7 @@ import { scoreForWord } from "../game/scoring";
 //   "countdown"  — 3 → 1 before play
 //   "playing"    — game in progress
 //   "gameover"   — final screen
-export function useGame(words) {
+export function useGame(words, track) {
   const [phase, setPhase] = useState("idle");
   const [letters, setLetters] = useState([]);
   const [shuffleNonce, setShuffleNonce] = useState(0); // bumps on every deal/shuffle to retrigger tile animations
@@ -23,10 +23,22 @@ export function useGame(words) {
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [score, setScore] = useState(0);
   const [foundWords, setFoundWords] = useState([]); // [{ word, points }]
+  const [invalidWords, setInvalidWords] = useState([]); // dictionary misses (the player guessed a non-word)
   const [input, setInput] = useState("");
   const [feedback, setFeedback] = useState(null);   // { kind: 'good'|'bad', message?, points }
   const [paused, setPaused] = useState(false);      // halts the timer (e.g. quit confirm modal)
   const feedbackId = useRef(0);
+
+  // Mirror frequently-changing state into refs so analytics events and the
+  // timer effect can read the latest values without forcing dep-array churn.
+  const foundWordsRef = useRef(foundWords);
+  foundWordsRef.current = foundWords;
+  const invalidWordsRef = useRef(invalidWords);
+  invalidWordsRef.current = invalidWords;
+  const scoreRef = useRef(score);
+  scoreRef.current = score;
+  const timeLeftRef = useRef(timeLeft);
+  timeLeftRef.current = timeLeft;
 
   const letterCounts = useMemo(() => countLetters(letters), [letters]);
   const foundSet = useMemo(() => new Set(foundWords.map((w) => w.word)), [foundWords]);
@@ -51,37 +63,53 @@ export function useGame(words) {
     if (phase !== "playing" || paused) return;
     if (timeLeft <= 0) {
       setPhase("gameover");
+      track?.("game_finished", {
+        valid_words: foundWordsRef.current.map((w) => w.word),
+        invalid_words: invalidWordsRef.current,
+        score: scoreRef.current,
+      });
       return;
     }
     const id = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(id);
-  }, [phase, timeLeft, paused]);
+  }, [phase, timeLeft, paused, track]);
 
   // ---- actions --------------------------------------------------------------
 
   const start = useCallback(() => {
-    setLetters(shuffle(pickLetterSet().split("")));
+    setLetters(shuffle(pickLetterSet(words).split("")));
     setShuffleNonce((n) => n + 1);
     setCountdown(COUNTDOWN_DURATION);
     setTimeLeft(GAME_DURATION);
     setScore(0);
     setFoundWords([]);
+    setInvalidWords([]);
     setInput("");
     setFeedback(null);
     setPaused(false);
     setPhase("countdown");
-  }, []);
+    track?.("game_started");
+  }, [words, track]);
 
   const reset = useCallback(() => setPhase("idle"), []);
 
-  const pause = useCallback(() => setPaused(true), []);
+  const pause = useCallback(() => {
+    setPaused(true);
+    track?.("game_paused");
+  }, [track]);
   const resume = useCallback(() => setPaused(false), []);
 
   // Abandon current game and return to title.
   const quit = useCallback(() => {
+    track?.("quit_game", {
+      valid_words: foundWordsRef.current.map((w) => w.word),
+      invalid_words: invalidWordsRef.current,
+      score: scoreRef.current,
+      seconds_remaining: timeLeftRef.current,
+    });
     setPaused(false);
     setPhase("idle");
-  }, []);
+  }, [track]);
 
   const shuffleLetters = useCallback(() => {
     setLetters((prev) => shuffle(prev));
@@ -146,6 +174,7 @@ export function useGame(words) {
       flashFeedback({ kind: "good", points });
     } else {
       setScore((s) => s + INCORRECT_WORD_PENALTY);
+      setInvalidWords((prev) => [...prev, word]);
       flashFeedback({ kind: "bad", points: INCORRECT_WORD_PENALTY, message: ERROR_MSGS.notAWord });
     }
   }, [phase, paused, input, foundSet, letterCounts, words, flashFeedback]);

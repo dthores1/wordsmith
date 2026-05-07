@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTrackEvent } from "./analytics/trackEvent";
 import { Countdown } from "./components/Countdown";
 import { GameOverScreen } from "./components/GameOverScreen";
 import { Leaderboard } from "./components/Leaderboard";
@@ -9,14 +10,45 @@ import { useGame } from "./hooks/useGame";
 import { useLeaderboard } from "./hooks/useLeaderboard";
 
 export default function App() {
+  const track = useTrackEvent();
   const { words, loading: dictLoading, error: dictError } = useDictionary();
-  const game = useGame(words);
+  const game = useGame(words, track);
   const leaderboard = useLeaderboard();
   const [view, setView] = useState("game"); // "game" | "leaderboard"
 
   useEffect(() => {
+    track("app_opened");
+  }, [track]);
+
+  useEffect(() => {
     if (game.phase !== "idle") setView("game");
   }, [game.phase]);
+
+  const showLeaderboard = () => {
+    track("view_leaderboard");
+    setView("leaderboard");
+  };
+
+  const handlePlayAgain = () => {
+    track("play_again");
+    game.start();
+  };
+
+  const handlePlayAgainFromLeaderboard = () => {
+    track("play_again");
+    setView("game");
+    game.start();
+  };
+
+  const handleSubmitScore = (name, bestWord) => {
+    track("submit_to_leaderboard", { name, score: game.score });
+    leaderboard.submit({
+      name,
+      score: game.score,
+      wordsFound: game.foundWords.length,
+      bestWord,
+    });
+  };
 
   return (
     <div className="min-h-full flex items-center justify-center px-4 py-6 sm:py-10">
@@ -34,10 +66,7 @@ export default function App() {
               loading={leaderboard.loading}
               error={leaderboard.error}
               onRefresh={leaderboard.refresh}
-              onBack={() => {
-                setView("game");
-                game.start();
-              }}
+              onBack={handlePlayAgainFromLeaderboard}
             />
           ) : game.phase === "idle" ? (
             <TitleScreen onStart={game.start} dictionaryLoading={dictLoading} />
@@ -64,16 +93,9 @@ export default function App() {
               score={game.score}
               foundWords={game.foundWords}
               isHighScore={leaderboard.isHighScore(game.score)}
-              onSubmitScore={(name, bestWord) =>
-                leaderboard.submit({
-                  name,
-                  score: game.score,
-                  wordsFound: game.foundWords.length,
-                  bestWord,
-                })
-              }
-              onPlayAgain={game.start}
-              onShowLeaderboard={() => setView("leaderboard")}
+              onSubmitScore={handleSubmitScore}
+              onPlayAgain={handlePlayAgain}
+              onShowLeaderboard={showLeaderboard}
             />
           )}
         </Card>

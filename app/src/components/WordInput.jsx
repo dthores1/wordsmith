@@ -14,6 +14,7 @@ export function WordInput({ value, onChange, onSubmit, onShuffle, shake, focusTo
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit();
+        ref.current?.focus();
       }}
       className="w-full"
     >

@@ -18,6 +18,14 @@ __pycache__
 app/node_modules
 app/dist
 
+# Local-only env files. Vite's convention: anything *.local is dev-only and
+# must never reach a production build. The committed .env (no suffix) is
+# what the production build picks up.
+.env.local
+.env.*.local
+app/.env.local
+app/.env.*.local
+
 # Local SQLite created during local smoke testing
 *.db
 
