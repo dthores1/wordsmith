@@ -51,7 +51,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-full flex items-center justify-center px-4 py-6 sm:py-10">
+    <div className="min-h-dvh flex items-center justify-center px-4 py-6 sm:py-10">
       <main className="w-full max-w-2xl">
         {dictError && (
           <div className="rounded-lg bg-bad/10 border border-bad/30 text-bad p-3 mb-4 text-sm">

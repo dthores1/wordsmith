@@ -16,18 +16,22 @@ export function WordInput({ value, onChange, onSubmit, onShuffle, shake, focusTo
         onSubmit();
         ref.current?.focus();
       }}
+      autoComplete="off"
       className="w-full"
     >
       <div className="flex gap-2 w-full">
         <input
           ref={ref}
           type="text"
+          name="wordsmith-input"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="characters"
           spellCheck={false}
           inputMode="text"
           enterKeyHint="go"
+          data-1p-ignore
+          data-lpignore="true"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={(e) => {
