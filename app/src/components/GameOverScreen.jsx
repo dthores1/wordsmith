@@ -57,7 +57,7 @@ export function GameOverScreen({
         )}
       </div>
 
-      {isHighScore && !submitted && (
+      {score > 0 && !submitted && (
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -68,7 +68,7 @@ export function GameOverScreen({
           className="w-full max-w-sm space-y-3"
         >
           <p className="text-ink-900 font-semibold">
-            New high score! Add your name:
+            {isHighScore ? "New high score! Add your name:" : "Save your score:"}
           </p>
           <div className="flex gap-2">
             <input
