@@ -125,23 +125,23 @@ export function useGame(words, track) {
     }, 900);
   }, []);
 
-  // Restrict typing to letters that exist (and respecting duplicate counts).
+  // Accept whatever the user types (lowercased, letters only). We deliberately
+  // do NOT trim invalid prefixes here: shrinking the controlled value mid-keystroke
+  // throws off the Android/Gboard IME composition span and makes the cursor jump
+  // backwards. canSpell is enforced on submit instead. We still flash a "bad"
+  // shake when the newly-added character would make the running prefix invalid,
+  // so the player gets immediate feedback without us mutating their value.
   const updateInput = useCallback(
     (raw) => {
       if (phase !== "playing") return;
       const cleaned = raw.toLowerCase().replace(/[^a-z]/g, "");
-      // Trim from the right while the running prefix can't be spelled
-      let trimmed = cleaned;
-      while (trimmed.length > 0 && !canSpell(trimmed, letterCounts)) {
-        trimmed = trimmed.slice(0, -1);
-      }
-      setInput(trimmed);
-      // If we had to drop a character, signal it visually
-      if (trimmed.length < cleaned.length) {
+      const grew = cleaned.length > input.length;
+      setInput(cleaned);
+      if (grew && !canSpell(cleaned, letterCounts)) {
         flashFeedback({ kind: "bad", shake: true });
       }
     },
-    [phase, letterCounts, flashFeedback]
+    [phase, input, letterCounts, flashFeedback]
   );
 
   const submitWord = useCallback(() => {
