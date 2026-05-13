@@ -22,7 +22,6 @@ export function PlayScreen({
   onQuit,
 }) {
   const [confirmingQuit, setConfirmingQuit] = useState(false);
-  const [focusToken, setFocusToken] = useState(0);
 
   const handleQuitClick = () => {
     if (score === 0) {
@@ -36,7 +35,6 @@ export function PlayScreen({
   const handleCancelQuit = () => {
     setConfirmingQuit(false);
     onResume();
-    setFocusToken((n) => n + 1); // re-focus the word input
   };
 
   return (
@@ -65,7 +63,7 @@ export function PlayScreen({
           onSubmit={onSubmit}
           onShuffle={onShuffle}
           shake={feedback?.kind === "bad" && (feedback.shake || feedback.message)}
-          focusToken={focusToken}
+          disabled={confirmingQuit}
         />
         <div className="h-5 mt-1.5 text-center text-sm">
           {feedback?.message ? (
