@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export function GameOverScreen({
   score,
   foundWords,
+  targetWord,
   isHighScore,
   onSubmitScore,
   onPlayAgain,
@@ -23,6 +24,8 @@ export function GameOverScreen({
     (best, w) => (w.word.length > best.length ? w.word : best),
     ""
   );
+
+  const foundTarget = !!targetWord && foundWords.some((w) => w.word === targetWord);
 
   return (
     <div className="flex flex-col items-center text-center gap-6 py-2">
@@ -57,6 +60,29 @@ export function GameOverScreen({
         )}
       </div>
 
+      {targetWord && (
+        <div
+          className={
+            "w-full max-w-md rounded-2xl border px-5 py-4 text-center " +
+            (foundTarget
+              ? "bg-secondary-50 border-secondary-300"
+              : "bg-surface-soft border-border")
+          }
+        >
+          <p className="font-label text-[11px] uppercase tracking-widest text-ink-500">
+            Target word
+          </p>
+          <p className="font-display font-extrabold text-3xl sm:text-4xl text-ink-900 uppercase tracking-wider mt-1">
+            {targetWord}
+          </p>
+          <p className={"text-sm mt-2 " + (foundTarget ? "text-good font-semibold" : "text-ink-700")}>
+            {foundTarget
+              ? "Nice — you found the full word."
+              : "Missed this one? Try spotting it next round."}
+          </p>
+        </div>
+      )}
+
       {score > 0 && !submitted && (
         <form
           onSubmit={(e) => {
@@ -72,7 +98,6 @@ export function GameOverScreen({
           </p>
           <div className="flex gap-2">
             <input
-              autoFocus
               value={name}
               onChange={(e) => setName(e.target.value.slice(0, 16))}
               placeholder="Your name"

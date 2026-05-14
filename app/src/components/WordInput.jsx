@@ -9,6 +9,14 @@ export function WordInput({ value, onChange, onSubmit, onShuffle, shake, focusTo
     ref.current?.focus();
   }, [focusToken]);
 
+  // Blur on unmount so the mobile keyboard dismisses when the game ends —
+  // iOS in particular leaves the keyboard up if a focused input is just
+  // removed from the DOM, which covers the game-over scorecard.
+  useEffect(() => {
+    const input = ref.current;
+    return () => input?.blur();
+  }, []);
+
   return (
     <form
       onSubmit={(e) => {

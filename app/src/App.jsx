@@ -11,8 +11,8 @@ import { useLeaderboard } from "./hooks/useLeaderboard";
 
 export default function App() {
   const track = useTrackEvent();
-  const { words, loading: dictLoading, error: dictError } = useDictionary();
-  const game = useGame(words, track);
+  const { words, racks, loading: dictLoading, error: dictError } = useDictionary();
+  const game = useGame(words, racks, track);
   const leaderboard = useLeaderboard();
   const [view, setView] = useState("game"); // "game" | "leaderboard"
 
@@ -92,6 +92,7 @@ export default function App() {
             <GameOverScreen
               score={game.score}
               foundWords={game.foundWords}
+              targetWord={game.targetWord}
               isHighScore={leaderboard.isHighScore(game.score)}
               onSubmitScore={handleSubmitScore}
               onPlayAgain={handlePlayAgain}

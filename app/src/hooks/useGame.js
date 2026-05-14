@@ -15,9 +15,10 @@ import { scoreForWord } from "../game/scoring";
 //   "countdown"  — 3 → 1 before play
 //   "playing"    — game in progress
 //   "gameover"   — final screen
-export function useGame(words, track) {
+export function useGame(words, racks, track) {
   const [phase, setPhase] = useState("idle");
   const [letters, setLetters] = useState([]);
+  const [targetWord, setTargetWord] = useState(""); // the unshuffled 8-letter source word (revealed on game over)
   const [shuffleNonce, setShuffleNonce] = useState(0); // bumps on every deal/shuffle to retrigger tile animations
   const [countdown, setCountdown] = useState(COUNTDOWN_DURATION);
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
@@ -77,7 +78,9 @@ export function useGame(words, track) {
   // ---- actions --------------------------------------------------------------
 
   const start = useCallback(() => {
-    setLetters(shuffle(pickLetterSet(words).split("")));
+    const word = pickLetterSet(racks);
+    setTargetWord(word);
+    setLetters(shuffle(word.split("")));
     setShuffleNonce((n) => n + 1);
     setCountdown(COUNTDOWN_DURATION);
     setTimeLeft(GAME_DURATION);
@@ -89,7 +92,7 @@ export function useGame(words, track) {
     setPaused(false);
     setPhase("countdown");
     track?.("game_started");
-  }, [words, track]);
+  }, [racks, track]);
 
   const reset = useCallback(() => setPhase("idle"), []);
 
@@ -182,6 +185,7 @@ export function useGame(words, track) {
   return {
     phase,
     letters,
+    targetWord,
     shuffleNonce,
     countdown,
     timeLeft,
