@@ -94,6 +94,9 @@ export default function App() {
               foundWords={game.foundWords}
               targetWord={game.targetWord}
               isHighScore={leaderboard.isHighScore(game.score)}
+              leaderboardRank={
+                leaderboard.entries.filter((e) => e.score > game.score).length + 1
+              }
               onSubmitScore={handleSubmitScore}
               onPlayAgain={handlePlayAgain}
               onShowLeaderboard={showLeaderboard}
