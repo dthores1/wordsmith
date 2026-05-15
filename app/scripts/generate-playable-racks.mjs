@@ -14,6 +14,10 @@
 //   node scripts/generate-playable-racks.mjs                  # writes the file
 //   node scripts/generate-playable-racks.mjs --preview        # prints threshold sweep, no write
 //   node scripts/generate-playable-racks.mjs --cutoff=100000  # override frequency cutoff
+//
+// Companion script: scripts/dump-racks-for-review.mjs writes the current pool
+// sorted by rank descending so you can scan and add obscure entries to
+// scripts/excluded-racks.txt.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -24,6 +28,7 @@ const PUBLIC_DIR = join(__dirname, "..", "public");
 const CACHE_DIR = join(__dirname, ".cache");
 const DICT_PATH = join(PUBLIC_DIR, "enable-word-list.txt");
 const FREQ_PATH = join(CACHE_DIR, "count_1w.txt");
+const EXCLUDED_PATH = join(__dirname, "excluded-racks.txt");
 const FREQ_URL = "https://norvig.com/ngrams/count_1w.txt";
 const OUT_PATH = join(PUBLIC_DIR, "playable-racks.txt");
 
@@ -149,13 +154,27 @@ for (const cutoff of thresholds) {
 }
 console.log();
 
+// ---- pass 3: manual exclusion list ----------------------------------------
+// Hand-curated list of words that pass both filters but are still too obscure
+// (Norvig over-represents technical writing — "ablation" looks common because
+// it's in scientific text). Plain text, one word per line, # for comments.
+
+const excluded = new Set();
+if (existsSync(EXCLUDED_PATH)) {
+  for (const raw of readFileSync(EXCLUDED_PATH, "utf8").split("\n")) {
+    const line = raw.split("#")[0].trim().toLowerCase();
+    if (line) excluded.add(line);
+  }
+}
+
 // ---- write output ----------------------------------------------------------
 
 const finalKept = playableRanked
-  .filter((x) => x.r <= FREQUENCY_RANK_CUTOFF)
+  .filter((x) => x.r <= FREQUENCY_RANK_CUTOFF && !excluded.has(x.w))
   .map((x) => x.w);
 
 console.log(`Chosen cutoff: top ${FREQUENCY_RANK_CUTOFF} most common`);
+console.log(`Manual exclusion list: ${excluded.size} entries`);
 console.log(`Final pool: ${finalKept.length} racks`);
 
 if (PREVIEW) {
