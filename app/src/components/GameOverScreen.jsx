@@ -29,7 +29,15 @@ export function GameOverScreen({
     ""
   );
 
-  const foundTarget = !!targetWord && foundWords.some((w) => w.word === targetWord);
+  // The targetWord we picked is just one valid 8-letter answer; any anagram
+  // counts (e.g. the player typing CATERING when our pick was CREATING).
+  // Display whichever full-length word the player actually found, so the
+  // reveal celebrates their find instead of contradicting it.
+  const fullLengthFind = targetWord
+    ? foundWords.find((w) => w.word.length === targetWord.length)?.word
+    : null;
+  const foundTarget = !!fullLengthFind;
+  const displayTarget = fullLengthFind || targetWord;
   const canSave = score > 0 && !submitted;
   const hasUnsavedName = canSave && name.trim().length > 0;
   const targetFlavor = getTargetFlavor({
@@ -96,7 +104,7 @@ export function GameOverScreen({
             Target word
           </p>
           <p className="font-display font-extrabold text-3xl sm:text-4xl text-ink-900 uppercase tracking-wider mt-1">
-            {targetWord}
+            {displayTarget}
           </p>
           <p className={"text-sm mt-2 " + (foundTarget ? "text-good font-semibold" : "text-ink-700")}>
             {targetFlavor}
